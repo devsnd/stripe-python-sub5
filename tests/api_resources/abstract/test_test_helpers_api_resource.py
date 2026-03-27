@@ -1,17 +1,17 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 import pytest
-from stripe import util
-from stripe.api_resources.abstract import APIResourceTestHelpers
+from stripe_sub5 import util
+from stripe_sub5.api_resources.abstract import APIResourceTestHelpers
 
 
 class TestTestHelperAPIResource(object):
-    @stripe.api_resources.abstract.test_helpers
-    class MyTestHelpersResource(stripe.api_resources.abstract.APIResource):
+    @stripe_sub5.api_resources.abstract.test_helpers
+    class MyTestHelpersResource(stripe_sub5.api_resources.abstract.APIResource):
         OBJECT_NAME = "myresource"
 
-        @stripe.api_resources.abstract.custom_method(
+        @stripe_sub5.api_resources.abstract.custom_method(
             "do_stuff", http_verb="post", http_path="do_the_thing"
         )
         class TestHelpers(APIResourceTestHelpers):
@@ -63,4 +63,4 @@ class TestTestHelperAPIResource(object):
 
     def test_helper_decorator_raises_for_non_resource(self):
         with pytest.raises(ValueError):
-            stripe.api_resources.abstract.test_helpers(str)
+            stripe_sub5.api_resources.abstract.test_helpers(str)

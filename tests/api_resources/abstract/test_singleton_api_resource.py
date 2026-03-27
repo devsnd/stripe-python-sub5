@@ -1,10 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 
 
 class TestSingletonAPIResource(object):
-    class MySingleton(stripe.api_resources.abstract.SingletonAPIResource):
+    class MySingleton(stripe_sub5.api_resources.abstract.SingletonAPIResource):
         OBJECT_NAME = "mysingleton"
 
     def test_retrieve(self, request_mock):

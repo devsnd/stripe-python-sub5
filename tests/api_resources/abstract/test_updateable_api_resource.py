@@ -2,11 +2,11 @@ from __future__ import absolute_import, division, print_function
 
 import pytest
 
-import stripe
+import stripe_sub5
 
 
 class TestUpdateableAPIResource(object):
-    class MyUpdateable(stripe.api_resources.abstract.UpdateableAPIResource):
+    class MyUpdateable(stripe_sub5.api_resources.abstract.UpdateableAPIResource):
         OBJECT_NAME = "myupdateable"
 
     @pytest.fixture

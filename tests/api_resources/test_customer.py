@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 
 
 TEST_RESOURCE_ID = "cus_123"
@@ -12,25 +12,25 @@ TEST_TRANSACTION_ID = "cbtxn_123"
 
 class TestCustomer(object):
     def test_is_listable(self, request_mock):
-        resources = stripe.Customer.list()
+        resources = stripe_sub5.Customer.list()
         request_mock.assert_requested("get", "/v1/customers")
         assert isinstance(resources.data, list)
-        assert isinstance(resources.data[0], stripe.Customer)
+        assert isinstance(resources.data[0], stripe_sub5.Customer)
 
     def test_is_retrievable(self, request_mock):
-        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource = stripe_sub5.Customer.retrieve(TEST_RESOURCE_ID)
         request_mock.assert_requested(
             "get", "/v1/customers/%s" % TEST_RESOURCE_ID
         )
-        assert isinstance(resource, stripe.Customer)
+        assert isinstance(resource, stripe_sub5.Customer)
 
     def test_is_creatable(self, request_mock):
-        resource = stripe.Customer.create()
+        resource = stripe_sub5.Customer.create()
         request_mock.assert_requested("post", "/v1/customers")
-        assert isinstance(resource, stripe.Customer)
+        assert isinstance(resource, stripe_sub5.Customer)
 
     def test_is_saveable(self, request_mock):
-        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource = stripe_sub5.Customer.retrieve(TEST_RESOURCE_ID)
         resource.metadata["key"] = "value"
         resource.save()
         request_mock.assert_requested(
@@ -38,16 +38,16 @@ class TestCustomer(object):
         )
 
     def test_is_modifiable(self, request_mock):
-        resource = stripe.Customer.modify(
+        resource = stripe_sub5.Customer.modify(
             TEST_RESOURCE_ID, metadata={"key": "value"}
         )
         request_mock.assert_requested(
             "post", "/v1/customers/%s" % TEST_RESOURCE_ID
         )
-        assert isinstance(resource, stripe.Customer)
+        assert isinstance(resource, stripe_sub5.Customer)
 
     def test_is_deletable(self, request_mock):
-        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource = stripe_sub5.Customer.retrieve(TEST_RESOURCE_ID)
         resource.delete()
         request_mock.assert_requested(
             "delete", "/v1/customers/%s" % TEST_RESOURCE_ID
@@ -55,21 +55,21 @@ class TestCustomer(object):
         assert resource.deleted is True
 
     def test_can_delete(self, request_mock):
-        resource = stripe.Customer.delete(TEST_RESOURCE_ID)
+        resource = stripe_sub5.Customer.delete(TEST_RESOURCE_ID)
         request_mock.assert_requested(
             "delete", "/v1/customers/%s" % TEST_RESOURCE_ID
         )
         assert resource.deleted is True
 
     def test_can_delete_discount(self, request_mock):
-        resource = stripe.Customer.retrieve(TEST_RESOURCE_ID)
+        resource = stripe_sub5.Customer.retrieve(TEST_RESOURCE_ID)
         resource.delete_discount()
         request_mock.assert_requested(
             "delete", "/v1/customers/%s/discount" % TEST_RESOURCE_ID
         )
 
     def test_can_delete_discount_class_method(self, request_mock):
-        stripe.Customer.delete_discount(TEST_RESOURCE_ID)
+        stripe_sub5.Customer.delete_discount(TEST_RESOURCE_ID)
         request_mock.assert_requested(
             "delete", "/v1/customers/%s/discount" % TEST_RESOURCE_ID
         )
@@ -77,20 +77,20 @@ class TestCustomer(object):
 
 class TestCustomerSources(object):
     def test_is_creatable(self, request_mock):
-        stripe.Customer.create_source(TEST_RESOURCE_ID, source="btok_123")
+        stripe_sub5.Customer.create_source(TEST_RESOURCE_ID, source="btok_123")
         request_mock.assert_requested(
             "post", "/v1/customers/%s/sources" % TEST_RESOURCE_ID
         )
 
     def test_is_retrievable(self, request_mock):
-        stripe.Customer.retrieve_source(TEST_RESOURCE_ID, TEST_SOURCE_ID)
+        stripe_sub5.Customer.retrieve_source(TEST_RESOURCE_ID, TEST_SOURCE_ID)
         request_mock.assert_requested(
             "get",
             "/v1/customers/%s/sources/%s" % (TEST_RESOURCE_ID, TEST_SOURCE_ID),
         )
 
     def test_is_modifiable(self, request_mock):
-        stripe.Customer.modify_source(
+        stripe_sub5.Customer.modify_source(
             TEST_RESOURCE_ID, TEST_SOURCE_ID, metadata={"foo": "bar"}
         )
         request_mock.assert_requested(
@@ -99,14 +99,14 @@ class TestCustomerSources(object):
         )
 
     def test_is_deletable(self, request_mock):
-        stripe.Customer.delete_source(TEST_RESOURCE_ID, TEST_SOURCE_ID)
+        stripe_sub5.Customer.delete_source(TEST_RESOURCE_ID, TEST_SOURCE_ID)
         request_mock.assert_requested(
             "delete",
             "/v1/customers/%s/sources/%s" % (TEST_RESOURCE_ID, TEST_SOURCE_ID),
         )
 
     def test_is_listable(self, request_mock):
-        resources = stripe.Customer.list_sources(TEST_RESOURCE_ID)
+        resources = stripe_sub5.Customer.list_sources(TEST_RESOURCE_ID)
         request_mock.assert_requested(
             "get", "/v1/customers/%s/sources" % TEST_RESOURCE_ID
         )
@@ -115,30 +115,30 @@ class TestCustomerSources(object):
 
 class TestCustomerTaxIds(object):
     def test_is_creatable(self, request_mock):
-        resource = stripe.Customer.create_tax_id(
+        resource = stripe_sub5.Customer.create_tax_id(
             TEST_RESOURCE_ID, type="eu_vat", value="11111"
         )
         request_mock.assert_requested(
             "post", "/v1/customers/%s/tax_ids" % TEST_RESOURCE_ID
         )
-        assert isinstance(resource, stripe.TaxId)
+        assert isinstance(resource, stripe_sub5.TaxId)
 
     def test_is_retrievable(self, request_mock):
-        stripe.Customer.retrieve_tax_id(TEST_RESOURCE_ID, TEST_TAX_ID_ID)
+        stripe_sub5.Customer.retrieve_tax_id(TEST_RESOURCE_ID, TEST_TAX_ID_ID)
         request_mock.assert_requested(
             "get",
             "/v1/customers/%s/tax_ids/%s" % (TEST_RESOURCE_ID, TEST_TAX_ID_ID),
         )
 
     def test_is_deletable(self, request_mock):
-        stripe.Customer.delete_tax_id(TEST_RESOURCE_ID, TEST_TAX_ID_ID)
+        stripe_sub5.Customer.delete_tax_id(TEST_RESOURCE_ID, TEST_TAX_ID_ID)
         request_mock.assert_requested(
             "delete",
             "/v1/customers/%s/tax_ids/%s" % (TEST_RESOURCE_ID, TEST_TAX_ID_ID),
         )
 
     def test_is_listable(self, request_mock):
-        resources = stripe.Customer.list_tax_ids(TEST_RESOURCE_ID)
+        resources = stripe_sub5.Customer.list_tax_ids(TEST_RESOURCE_ID)
         request_mock.assert_requested(
             "get", "/v1/customers/%s/tax_ids" % TEST_RESOURCE_ID
         )
@@ -147,16 +147,16 @@ class TestCustomerTaxIds(object):
 
 class TestCustomerTransactions(object):
     def test_is_creatable(self, request_mock):
-        resource = stripe.Customer.create_balance_transaction(
+        resource = stripe_sub5.Customer.create_balance_transaction(
             TEST_RESOURCE_ID, amount=1234, currency="usd"
         )
         request_mock.assert_requested(
             "post", "/v1/customers/%s/balance_transactions" % TEST_RESOURCE_ID
         )
-        assert isinstance(resource, stripe.CustomerBalanceTransaction)
+        assert isinstance(resource, stripe_sub5.CustomerBalanceTransaction)
 
     def test_is_retrievable(self, request_mock):
-        stripe.Customer.retrieve_balance_transaction(
+        stripe_sub5.Customer.retrieve_balance_transaction(
             TEST_RESOURCE_ID, TEST_TRANSACTION_ID
         )
         request_mock.assert_requested(
@@ -166,7 +166,7 @@ class TestCustomerTransactions(object):
         )
 
     def test_is_listable(self, request_mock):
-        resources = stripe.Customer.list_balance_transactions(TEST_RESOURCE_ID)
+        resources = stripe_sub5.Customer.list_balance_transactions(TEST_RESOURCE_ID)
         request_mock.assert_requested(
             "get", "/v1/customers/%s/balance_transactions" % TEST_RESOURCE_ID
         )
@@ -175,19 +175,19 @@ class TestCustomerTransactions(object):
 
 class TestCustomerPaymentMethods(object):
     def test_is_listable(self, request_mock):
-        stripe.Customer.list_payment_methods(TEST_RESOURCE_ID, type="card")
+        stripe_sub5.Customer.list_payment_methods(TEST_RESOURCE_ID, type="card")
         request_mock.assert_requested(
             "get", "/v1/customers/%s/payment_methods" % TEST_RESOURCE_ID
         )
 
     def test_is_listable_on_object(self, request_mock):
-        resource = stripe.Customer.retrieve(
+        resource = stripe_sub5.Customer.retrieve(
             TEST_RESOURCE_ID
         ).list_payment_methods(TEST_RESOURCE_ID, type="card")
         request_mock.assert_requested(
             "get", "/v1/customers/%s/payment_methods" % TEST_RESOURCE_ID
         )
-        assert isinstance(resource, stripe.ListObject)
+        assert isinstance(resource, stripe_sub5.ListObject)
 
 
 class TestCustomerCashBalanceMethods(object):
@@ -198,7 +198,7 @@ class TestCustomerCashBalanceMethods(object):
     def test_customer_cashbalance_retrieve_legacy_call_pattern(
         self, request_mock
     ):
-        stripe.Customer.retrieve_cash_balance("cus_123", None)
+        stripe_sub5.Customer.retrieve_cash_balance("cus_123", None)
         request_mock.assert_requested(
             "get", "/v1/customers/cus_123/cash_balance"
         )
@@ -206,7 +206,7 @@ class TestCustomerCashBalanceMethods(object):
     def test_customer_cashbalance_modify_legacy_call_pattern(
         self, request_mock
     ):
-        stripe.Customer.modify_cash_balance(
+        stripe_sub5.Customer.modify_cash_balance(
             "cus_123",
             None,
             settings={"reconciliation_mode": "manual"},
@@ -218,7 +218,7 @@ class TestCustomerCashBalanceMethods(object):
         )
 
     def test_customer_cashbalance_modify_fixed_pattern(self, request_mock):
-        stripe.Customer.modify_cash_balance(
+        stripe_sub5.Customer.modify_cash_balance(
             "cus_123",
             settings={"reconciliation_mode": "manual"},
         )

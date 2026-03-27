@@ -2,10 +2,10 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-import stripe
+import stripe_sub5
 
 
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+stripe_sub5.api_key = os.environ.get("STRIPE_SECRET_KEY")
 
 print("Attempting charge...")
 
@@ -15,20 +15,20 @@ proxy = {
 }
 
 clients = (
-    stripe.http_client.RequestsClient(
-        verify_ssl_certs=stripe.verify_ssl_certs, proxy=proxy
+    stripe_sub5.http_client.RequestsClient(
+        verify_ssl_certs=stripe_sub5.verify_ssl_certs, proxy=proxy
     ),
-    stripe.http_client.PycurlClient(
-        verify_ssl_certs=stripe.verify_ssl_certs, proxy=proxy
+    stripe_sub5.http_client.PycurlClient(
+        verify_ssl_certs=stripe_sub5.verify_ssl_certs, proxy=proxy
     ),
-    stripe.http_client.Urllib2Client(
-        verify_ssl_certs=stripe.verify_ssl_certs, proxy=proxy
+    stripe_sub5.http_client.Urllib2Client(
+        verify_ssl_certs=stripe_sub5.verify_ssl_certs, proxy=proxy
     ),
 )
 
 for c in clients:
-    stripe.default_http_client = c
-    resp = stripe.Charge.create(
+    stripe_sub5.default_http_client = c
+    resp = stripe_sub5.Charge.create(
         amount=200,
         currency="usd",
         card="tok_visa",

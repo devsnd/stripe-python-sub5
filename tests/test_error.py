@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-from stripe import six, error
+from stripe_sub5 import six, error
 
 
 class TestStripeError(object):

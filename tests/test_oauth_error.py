@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-from stripe import oauth_error
+from stripe_sub5 import oauth_error
 
 
 class TestOAuthError(object):

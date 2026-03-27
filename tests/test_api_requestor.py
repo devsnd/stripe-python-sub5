@@ -8,11 +8,11 @@ from collections import OrderedDict
 
 import pytest
 
-import stripe
-from stripe import six, util
-from stripe.stripe_response import StripeResponse, StripeStreamResponse
+import stripe_sub5
+from stripe_sub5 import six, util
+from stripe_sub5.stripe_response import StripeResponse, StripeStreamResponse
 
-from stripe.six.moves.urllib.parse import urlsplit
+from stripe_sub5.six.moves.urllib.parse import urlsplit
 
 import urllib3
 
@@ -50,7 +50,7 @@ class APIHeaderMatcher(object):
         fail_platform_call=False,
     ):
         self.request_method = request_method
-        self.api_key = api_key or stripe.api_key
+        self.api_key = api_key or stripe_sub5.api_key
         self.extra = extra
         self.user_agent = user_agent
         self.app_info = app_info
@@ -132,7 +132,7 @@ class QueryMatcher(object):
     def __eq__(self, other):
         query = urlsplit(other).query or other
 
-        parsed = stripe.util.parse_qsl(query)
+        parsed = stripe_sub5.util.parse_qsl(query)
         return self.expected == sorted(parsed)
 
     def __repr__(self):
@@ -155,7 +155,7 @@ class UrlMatcher(object):
                 )
                 return False
 
-        q_matcher = QueryMatcher(stripe.util.parse_qsl(self.exp_parts.query))
+        q_matcher = QueryMatcher(stripe_sub5.util.parse_qsl(self.exp_parts.query))
         return q_matcher == other
 
     def __repr__(self):
@@ -206,7 +206,7 @@ class TestAPIRequestor(object):
         ],
         "list": [("%s[0]", 1), ("%s[1]", "foo"), ("%s[2]", "baz")],
         "string": [("%s", "boo")],
-        "unicode": [("%s", stripe.util.utf8(u"\u1234"))],
+        "unicode": [("%s", stripe_sub5.util.utf8(u"\u1234"))],
         "datetime": [("%s", 1356994801)],
         "none": [],
     }
@@ -214,31 +214,31 @@ class TestAPIRequestor(object):
     @pytest.fixture(autouse=True)
     def setup_stripe(self):
         orig_attrs = {
-            "api_key": stripe.api_key,
-            "api_version": stripe.api_version,
-            "default_http_client": stripe.default_http_client,
-            "enable_telemetry": stripe.enable_telemetry,
+            "api_key": stripe_sub5.api_key,
+            "api_version": stripe_sub5.api_version,
+            "default_http_client": stripe_sub5.default_http_client,
+            "enable_telemetry": stripe_sub5.enable_telemetry,
         }
-        stripe.api_key = "sk_test_123"
-        stripe.api_version = "2017-12-14"
-        stripe.default_http_client = None
-        stripe.enable_telemetry = False
+        stripe_sub5.api_key = "sk_test_123"
+        stripe_sub5.api_version = "2017-12-14"
+        stripe_sub5.default_http_client = None
+        stripe_sub5.enable_telemetry = False
         yield
-        stripe.api_key = orig_attrs["api_key"]
-        stripe.api_version = orig_attrs["api_version"]
-        stripe.default_http_client = orig_attrs["default_http_client"]
-        stripe.enable_telemetry = orig_attrs["enable_telemetry"]
+        stripe_sub5.api_key = orig_attrs["api_key"]
+        stripe_sub5.api_version = orig_attrs["api_version"]
+        stripe_sub5.default_http_client = orig_attrs["default_http_client"]
+        stripe_sub5.enable_telemetry = orig_attrs["enable_telemetry"]
 
     @pytest.fixture
     def http_client(self, mocker):
-        http_client = mocker.Mock(stripe.http_client.HTTPClient)
+        http_client = mocker.Mock(stripe_sub5.http_client.HTTPClient)
         http_client._verify_ssl_certs = True
         http_client.name = "mockclient"
         return http_client
 
     @pytest.fixture
     def requestor(self, http_client):
-        requestor = stripe.api_requestor.APIRequestor(client=http_client)
+        requestor = stripe_sub5.api_requestor.APIRequestor(client=http_client)
         return requestor
 
     @pytest.fixture
@@ -269,7 +269,7 @@ class TestAPIRequestor(object):
             is_streaming=False,
         ):
             if not abs_url:
-                abs_url = "%s%s" % (stripe.api_base, self.valid_path)
+                abs_url = "%s%s" % (stripe_sub5.api_base, self.valid_path)
             if not headers:
                 headers = APIHeaderMatcher(request_method=method)
 
@@ -297,7 +297,7 @@ class TestAPIRequestor(object):
         ]
 
         stk = []
-        fn = getattr(stripe.api_requestor.APIRequestor, "encode_%s" % (key,))
+        fn = getattr(stripe_sub5.api_requestor.APIRequestor, "encode_%s" % (key,))
         fn(stk, stk_key, value)
 
         if isinstance(value, dict):
@@ -309,7 +309,7 @@ class TestAPIRequestor(object):
     def _test_encode_naive_datetime(self):
         stk = []
 
-        stripe.api_requestor.APIRequestor.encode_datetime(
+        stripe_sub5.api_requestor.APIRequestor.encode_datetime(
             stk, "test", datetime.datetime(2013, 1, 1)
         )
 
@@ -331,7 +331,7 @@ class TestAPIRequestor(object):
 
     def test_dictionary_list_encoding(self):
         params = {"foo": {"0": {"bar": "bat"}}}
-        encoded = list(stripe.api_requestor._api_encode(params))
+        encoded = list(stripe_sub5.api_requestor._api_encode(params))
         key, value = encoded[0]
 
         assert key == "foo[0][bar]"
@@ -348,7 +348,7 @@ class TestAPIRequestor(object):
                 ]
             )
         }
-        encoded = list(stripe.api_requestor._api_encode(params))
+        encoded = list(stripe_sub5.api_requestor._api_encode(params))
 
         assert encoded[0][0] == "ordered[one]"
         assert encoded[1][0] == "ordered[two]"
@@ -358,16 +358,16 @@ class TestAPIRequestor(object):
 
     def test_url_construction(self, requestor, mock_response, check_call):
         CASES = (
-            ("%s?foo=bar" % stripe.api_base, "", {"foo": "bar"}),
-            ("%s?foo=bar" % stripe.api_base, "?", {"foo": "bar"}),
-            (stripe.api_base, "", {}),
+            ("%s?foo=bar" % stripe_sub5.api_base, "", {"foo": "bar"}),
+            ("%s?foo=bar" % stripe_sub5.api_base, "?", {"foo": "bar"}),
+            (stripe_sub5.api_base, "", {}),
             (
-                "%s/%%20spaced?foo=bar%%24&baz=5" % stripe.api_base,
+                "%s/%%20spaced?foo=bar%%24&baz=5" % stripe_sub5.api_base,
                 "/%20spaced?foo=bar%24",
                 {"baz": "5"},
             ),
             (
-                "%s?foo=bar&foo=bar" % stripe.api_base,
+                "%s?foo=bar&foo=bar" % stripe_sub5.api_base,
                 "?foo=bar",
                 {"foo": "bar"},
             ),
@@ -444,11 +444,11 @@ class TestAPIRequestor(object):
             if method == "post":
                 check_call(
                     method,
-                    post_data=QueryMatcher(stripe.util.parse_qsl(encoded)),
+                    post_data=QueryMatcher(stripe_sub5.util.parse_qsl(encoded)),
                 )
             else:
                 abs_url = "%s%s?%s" % (
-                    stripe.api_base,
+                    stripe_sub5.api_base,
                     self.valid_path,
                     encoded,
                 )
@@ -484,12 +484,12 @@ class TestAPIRequestor(object):
             if method == "post":
                 check_call(
                     method,
-                    post_data=QueryMatcher(stripe.util.parse_qsl(encoded)),
+                    post_data=QueryMatcher(stripe_sub5.util.parse_qsl(encoded)),
                     is_streaming=True,
                 )
             else:
                 abs_url = "%s%s?%s" % (
-                    stripe.api_base,
+                    stripe_sub5.api_base,
                     self.valid_path,
                     encoded,
                 )
@@ -504,7 +504,7 @@ class TestAPIRequestor(object):
 
     def test_uses_instance_key(self, http_client, mock_response, check_call):
         key = "fookey"
-        requestor = stripe.api_requestor.APIRequestor(key, client=http_client)
+        requestor = stripe_sub5.api_requestor.APIRequestor(key, client=http_client)
 
         mock_response("{}", 200)
 
@@ -517,7 +517,7 @@ class TestAPIRequestor(object):
         self, http_client, mock_response, check_call
     ):
         api_version = "fooversion"
-        requestor = stripe.api_requestor.APIRequestor(
+        requestor = stripe_sub5.api_requestor.APIRequestor(
             api_version=api_version, client=http_client
         )
 
@@ -536,7 +536,7 @@ class TestAPIRequestor(object):
         self, http_client, mock_response, check_call
     ):
         account = "acct_foo"
-        requestor = stripe.api_requestor.APIRequestor(
+        requestor = stripe_sub5.api_requestor.APIRequestor(
             account=account, client=http_client
         )
 
@@ -552,28 +552,28 @@ class TestAPIRequestor(object):
         )
 
     def test_sets_default_http_client(self, http_client):
-        assert not stripe.default_http_client
+        assert not stripe_sub5.default_http_client
 
-        stripe.api_requestor.APIRequestor(client=http_client)
+        stripe_sub5.api_requestor.APIRequestor(client=http_client)
 
         # default_http_client is not populated if a client is provided
-        assert not stripe.default_http_client
+        assert not stripe_sub5.default_http_client
 
-        stripe.api_requestor.APIRequestor()
+        stripe_sub5.api_requestor.APIRequestor()
 
         # default_http_client is set when no client is specified
-        assert stripe.default_http_client
+        assert stripe_sub5.default_http_client
 
-        new_default_client = stripe.default_http_client
-        stripe.api_requestor.APIRequestor()
+        new_default_client = stripe_sub5.default_http_client
+        stripe_sub5.api_requestor.APIRequestor()
 
         # the newly created client is reused
-        assert stripe.default_http_client == new_default_client
+        assert stripe_sub5.default_http_client == new_default_client
 
     def test_uses_app_info(self, requestor, mock_response, check_call):
         try:
-            old = stripe.app_info
-            stripe.set_app_info(
+            old = stripe_sub5.app_info
+            stripe_sub5.set_app_info(
                 "MyAwesomePlugin",
                 url="https://myawesomeplugin.info",
                 version="1.2.34",
@@ -583,7 +583,7 @@ class TestAPIRequestor(object):
             mock_response("{}", 200)
             requestor.request("get", self.valid_path, {})
 
-            ua = "Stripe/v1 PythonBindings/%s" % (stripe.version.VERSION,)
+            ua = "Stripe/v1 PythonBindings/%s" % (stripe_sub5.version.VERSION,)
             ua += " MyAwesomePlugin/1.2.34 (https://myawesomeplugin.info)"
             header_matcher = APIHeaderMatcher(
                 user_agent=ua,
@@ -596,7 +596,7 @@ class TestAPIRequestor(object):
             )
             check_call("get", headers=header_matcher)
         finally:
-            stripe.app_info = old
+            stripe_sub5.app_info = old
 
     def test_handles_failed_platform_call(
         self, requestor, mocker, mock_response, check_call
@@ -639,52 +639,52 @@ class TestAPIRequestor(object):
         check_call(meth, headers=header_matcher, post_data="")
 
     def test_fails_without_api_key(self, requestor):
-        stripe.api_key = None
+        stripe_sub5.api_key = None
 
-        with pytest.raises(stripe.error.AuthenticationError):
+        with pytest.raises(stripe_sub5.error.AuthenticationError):
             requestor.request("get", self.valid_path, {})
 
     def test_invalid_request_error_404(self, requestor, mock_response):
         mock_response('{"error": {}}', 404)
 
-        with pytest.raises(stripe.error.InvalidRequestError):
+        with pytest.raises(stripe_sub5.error.InvalidRequestError):
             requestor.request("get", self.valid_path, {})
 
     def test_invalid_request_error_400(self, requestor, mock_response):
         mock_response('{"error": {}}', 400)
 
-        with pytest.raises(stripe.error.InvalidRequestError):
+        with pytest.raises(stripe_sub5.error.InvalidRequestError):
             requestor.request("get", self.valid_path, {})
 
     def test_idempotency_error(self, requestor, mock_response):
         mock_response('{"error": {"type": "idempotency_error"}}', 400)
 
-        with pytest.raises(stripe.error.IdempotencyError):
+        with pytest.raises(stripe_sub5.error.IdempotencyError):
             requestor.request("get", self.valid_path, {})
 
     def test_authentication_error(self, requestor, mock_response):
         mock_response('{"error": {}}', 401)
 
-        with pytest.raises(stripe.error.AuthenticationError):
+        with pytest.raises(stripe_sub5.error.AuthenticationError):
             requestor.request("get", self.valid_path, {})
 
     def test_permissions_error(self, requestor, mock_response):
         mock_response('{"error": {}}', 403)
 
-        with pytest.raises(stripe.error.PermissionError):
+        with pytest.raises(stripe_sub5.error.PermissionError):
             requestor.request("get", self.valid_path, {})
 
     def test_card_error(self, requestor, mock_response):
         mock_response('{"error": {"code": "invalid_expiry_year"}}', 402)
 
-        with pytest.raises(stripe.error.CardError) as excinfo:
+        with pytest.raises(stripe_sub5.error.CardError) as excinfo:
             requestor.request("get", self.valid_path, {})
         assert excinfo.value.code == "invalid_expiry_year"
 
     def test_rate_limit_error(self, requestor, mock_response):
         mock_response('{"error": {}}', 429)
 
-        with pytest.raises(stripe.error.RateLimitError):
+        with pytest.raises(stripe_sub5.error.RateLimitError):
             requestor.request("get", self.valid_path, {})
 
     def test_old_rate_limit_error(self, requestor, mock_response):
@@ -693,41 +693,41 @@ class TestAPIRequestor(object):
         """
         mock_response('{"error": {"code":"rate_limit"}}', 400)
 
-        with pytest.raises(stripe.error.RateLimitError):
+        with pytest.raises(stripe_sub5.error.RateLimitError):
             requestor.request("get", self.valid_path, {})
 
     def test_server_error(self, requestor, mock_response):
         mock_response('{"error": {}}', 500)
 
-        with pytest.raises(stripe.error.APIError):
+        with pytest.raises(stripe_sub5.error.APIError):
             requestor.request("get", self.valid_path, {})
 
     def test_invalid_json(self, requestor, mock_response):
         mock_response("{", 200)
 
-        with pytest.raises(stripe.error.APIError):
+        with pytest.raises(stripe_sub5.error.APIError):
             requestor.request("get", self.valid_path, {})
 
     def test_invalid_method(self, requestor):
-        with pytest.raises(stripe.error.APIConnectionError):
+        with pytest.raises(stripe_sub5.error.APIConnectionError):
             requestor.request("foo", "bar")
 
     def test_oauth_invalid_requestor_error(self, requestor, mock_response):
         mock_response('{"error": "invalid_request"}', 400)
 
-        with pytest.raises(stripe.oauth_error.InvalidRequestError):
+        with pytest.raises(stripe_sub5.oauth_error.InvalidRequestError):
             requestor.request("get", self.valid_path, {})
 
     def test_invalid_client_error(self, requestor, mock_response):
         mock_response('{"error": "invalid_client"}', 401)
 
-        with pytest.raises(stripe.oauth_error.InvalidClientError):
+        with pytest.raises(stripe_sub5.oauth_error.InvalidClientError):
             requestor.request("get", self.valid_path, {})
 
     def test_invalid_grant_error(self, requestor, mock_response):
         mock_response('{"error": "invalid_grant"}', 400)
 
-        with pytest.raises(stripe.oauth_error.InvalidGrantError):
+        with pytest.raises(stripe_sub5.oauth_error.InvalidGrantError):
             requestor.request("get", self.valid_path, {})
 
     def test_extract_error_from_stream_request_for_bytes(
@@ -737,7 +737,7 @@ class TestAPIRequestor(object):
             util.io.BytesIO(b'{"error": "invalid_grant"}'), 400
         )
 
-        with pytest.raises(stripe.oauth_error.InvalidGrantError):
+        with pytest.raises(stripe_sub5.oauth_error.InvalidGrantError):
             requestor.request_stream("get", self.valid_path, {})
 
     def test_extract_error_from_stream_request_for_response(
@@ -752,7 +752,7 @@ class TestAPIRequestor(object):
             400,
         )
 
-        with pytest.raises(stripe.oauth_error.InvalidGrantError):
+        with pytest.raises(stripe_sub5.oauth_error.InvalidGrantError):
             requestor.request_stream("get", self.valid_path, {})
 
     def test_raw_request_with_file_param(self, requestor, mock_response):
@@ -769,22 +769,22 @@ class TestDefaultClient(object):
     @pytest.fixture(autouse=True)
     def setup_stripe(self):
         orig_attrs = {
-            "api_key": stripe.api_key,
-            "default_http_client": stripe.default_http_client,
+            "api_key": stripe_sub5.api_key,
+            "default_http_client": stripe_sub5.default_http_client,
         }
-        stripe.api_key = "sk_test_123"
+        stripe_sub5.api_key = "sk_test_123"
         yield
-        stripe.api_key = orig_attrs["api_key"]
-        stripe.default_http_client = orig_attrs["default_http_client"]
+        stripe_sub5.api_key = orig_attrs["api_key"]
+        stripe_sub5.default_http_client = orig_attrs["default_http_client"]
 
     def test_default_http_client_called(self, mocker):
-        hc = mocker.Mock(stripe.http_client.HTTPClient)
+        hc = mocker.Mock(stripe_sub5.http_client.HTTPClient)
         hc._verify_ssl_certs = True
         hc.name = "mockclient"
         hc.request_with_retries = mocker.Mock(return_value=("{}", 200, {}))
 
-        stripe.default_http_client = hc
-        stripe.Charge.list(limit=3)
+        stripe_sub5.default_http_client = hc
+        stripe_sub5.Charge.list(limit=3)
 
         hc.request_with_retries.assert_called_with(
             "get",

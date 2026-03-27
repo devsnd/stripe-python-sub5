@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import pytest
 
-import stripe
+import stripe_sub5
 
 
 TEST_SUBSCRIPTION_ITEM_ID = "si_123"
@@ -10,7 +10,7 @@ TEST_SUBSCRIPTION_ITEM_ID = "si_123"
 
 class TestUsageRecord(object):
     def test_is_creatable(self, request_mock):
-        resource = stripe.UsageRecord.create(
+        resource = stripe_sub5.UsageRecord.create(
             subscription_item=TEST_SUBSCRIPTION_ITEM_ID,
             quantity=5000,
             timestamp=1524182400,
@@ -21,10 +21,10 @@ class TestUsageRecord(object):
             "/v1/subscription_items/%s/usage_records"
             % (TEST_SUBSCRIPTION_ITEM_ID),
         )
-        assert isinstance(resource, stripe.UsageRecord)
+        assert isinstance(resource, stripe_sub5.UsageRecord)
 
     def test_raises_when_creating_without_subscription_item(self):
         with pytest.raises(ValueError):
-            stripe.UsageRecord.create(
+            stripe_sub5.UsageRecord.create(
                 quantity=5000, timestamp=1524182400, action="increment"
             )

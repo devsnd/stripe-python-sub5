@@ -2,14 +2,14 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-import stripe
+import stripe_sub5
 
 
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+stripe_sub5.api_key = os.environ.get("STRIPE_SECRET_KEY")
 
 print("Attempting charge...")
 
-resp = stripe.Charge.create(
+resp = stripe_sub5.Charge.create(
     amount=200,
     currency="usd",
     card="tok_visa",

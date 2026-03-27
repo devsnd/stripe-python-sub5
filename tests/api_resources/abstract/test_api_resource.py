@@ -2,11 +2,11 @@ from __future__ import absolute_import, division, print_function
 
 import pytest
 
-import stripe
+import stripe_sub5
 
 
 class TestAPIResource(object):
-    class MyResource(stripe.api_resources.abstract.APIResource):
+    class MyResource(stripe_sub5.api_resources.abstract.APIResource):
         OBJECT_NAME = "myresource"
 
     def test_retrieve_and_refresh(self, request_mock):
@@ -64,15 +64,15 @@ class TestAPIResource(object):
             "alist": [{"object": "customer", "name": "chilango"}],
         }
 
-        converted = stripe.util.convert_to_stripe_object(
+        converted = stripe_sub5.util.convert_to_stripe_object(
             sample, "akey", None, None
         )
 
         # Types
-        assert isinstance(converted, stripe.stripe_object.StripeObject)
-        assert isinstance(converted.adict, stripe.Charge)
+        assert isinstance(converted, stripe_sub5.stripe_object.StripeObject)
+        assert isinstance(converted.adict, stripe_sub5.Charge)
         assert len(converted.alist) == 1
-        assert isinstance(converted.alist[0], stripe.Customer)
+        assert isinstance(converted.alist[0], stripe_sub5.Customer)
 
         # Values
         assert converted.foo == "bar"
@@ -85,5 +85,5 @@ class TestAPIResource(object):
 
     def test_raise_on_incorrect_id_type(self):
         for obj in [None, 1, 3.14, dict(), list(), set(), tuple(), object()]:
-            with pytest.raises(stripe.error.InvalidRequestError):
+            with pytest.raises(stripe_sub5.error.InvalidRequestError):
                 self.MyResource.retrieve(obj)

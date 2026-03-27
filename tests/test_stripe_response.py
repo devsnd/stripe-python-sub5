@@ -5,8 +5,8 @@ from collections import OrderedDict
 
 import pytest
 
-from stripe import six
-from stripe.stripe_response import StripeResponseBase, StripeResponse
+from stripe_sub5 import six
+from stripe_sub5.stripe_response import StripeResponseBase, StripeResponse
 
 
 class ResponseTestBase(object):

@@ -1,10 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 
 
 class TestSearchableAPIResource(object):
-    class MySearchable(stripe.api_resources.abstract.SearchableAPIResource):
+    class MySearchable(stripe_sub5.api_resources.abstract.SearchableAPIResource):
         OBJECT_NAME = "mysearchable"
 
         @classmethod
@@ -33,7 +33,7 @@ class TestSearchableAPIResource(object):
         res = self.MySearchable.search(query='currency:"CAD"')
         request_mock.assert_requested("get", "/v1/mysearchables/search", {})
         assert len(res.data) == 2
-        assert all(isinstance(obj, stripe.Charge) for obj in res.data)
+        assert all(isinstance(obj, stripe_sub5.Charge) for obj in res.data)
         assert res.data[0].name == "jose"
         assert res.data[1].name == "curly"
 
@@ -88,5 +88,5 @@ class TestSearchableAPIResource(object):
         )
 
         assert len(res2.data) == 1
-        assert all(isinstance(obj, stripe.Charge) for obj in res2.data)
+        assert all(isinstance(obj, stripe_sub5.Charge) for obj in res2.data)
         assert res2.data[0].name == "test"

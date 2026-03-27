@@ -2,11 +2,11 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-import stripe
+import stripe_sub5
 from flask import Flask, request
 
 
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+stripe_sub5.api_key = os.environ.get("STRIPE_SECRET_KEY")
 webhook_secret = os.environ.get("WEBHOOK_SECRET")
 
 app = Flask(__name__)
@@ -18,13 +18,13 @@ def webhooks():
     received_sig = request.headers.get("Stripe-Signature", None)
 
     try:
-        event = stripe.Webhook.construct_event(
+        event = stripe_sub5.Webhook.construct_event(
             payload, received_sig, webhook_secret
         )
     except ValueError:
         print("Error while decoding event!")
         return "Bad payload", 400
-    except stripe.error.SignatureVerificationError:
+    except stripe_sub5.error.SignatureVerificationError:
         print("Invalid signature!")
         return "Bad signature", 400
 

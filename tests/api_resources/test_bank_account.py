@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import pytest
 
-import stripe
+import stripe_sub5
 
 
 TEST_RESOURCE_ID = "ba_123"
@@ -16,7 +16,7 @@ class TestBankAccountTest(object):
             "metadata": {},
         }
         bank_dict.update(params)
-        return stripe.BankAccount.construct_from(bank_dict, stripe.api_key)
+        return stripe_sub5.BankAccount.construct_from(bank_dict, stripe_sub5.api_key)
 
     def test_has_account_instance_url(self):
         resource = self.construct_resource(account="acct_123")
@@ -37,7 +37,7 @@ class TestBankAccountTest(object):
 
     def test_is_not_retrievable(self):
         with pytest.raises(NotImplementedError):
-            stripe.BankAccount.retrieve(TEST_RESOURCE_ID)
+            stripe_sub5.BankAccount.retrieve(TEST_RESOURCE_ID)
 
     def test_is_saveable(self, request_mock):
         resource = self.construct_resource(customer="cus_123")
@@ -49,7 +49,7 @@ class TestBankAccountTest(object):
 
     def test_is_not_modifiable(self):
         with pytest.raises(NotImplementedError):
-            stripe.BankAccount.modify(
+            stripe_sub5.BankAccount.modify(
                 TEST_RESOURCE_ID, metadata={"key": "value"}
             )
 

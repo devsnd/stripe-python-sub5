@@ -2,12 +2,12 @@ from __future__ import absolute_import, division, print_function
 
 import os
 
-import stripe
+import stripe_sub5
 from flask import Flask, request, redirect
 
 
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
-stripe.client_id = os.environ.get("STRIPE_CLIENT_ID")
+stripe_sub5.api_key = os.environ.get("STRIPE_SECRET_KEY")
+stripe_sub5.client_id = os.environ.get("STRIPE_CLIENT_ID")
 
 app = Flask(__name__)
 
@@ -19,7 +19,7 @@ def index():
 
 @app.route("/authorize")
 def authorize():
-    url = stripe.OAuth.authorize_url(scope="read_only")
+    url = stripe_sub5.OAuth.authorize_url(scope="read_only")
     return redirect(url)
 
 
@@ -27,8 +27,8 @@ def authorize():
 def callback():
     code = request.args.get("code")
     try:
-        resp = stripe.OAuth.token(grant_type="authorization_code", code=code)
-    except stripe.oauth_error.OAuthError as e:
+        resp = stripe_sub5.OAuth.token(grant_type="authorization_code", code=code)
+    except stripe_sub5.oauth_error.OAuthError as e:
         return "Error: " + str(e)
 
     return """
@@ -44,8 +44,8 @@ disconnect the account.</p>
 def deauthorize():
     stripe_user_id = request.args.get("stripe_user_id")
     try:
-        stripe.OAuth.deauthorize(stripe_user_id=stripe_user_id)
-    except stripe.oauth_error.OAuthError as e:
+        stripe_sub5.OAuth.deauthorize(stripe_user_id=stripe_user_id)
+    except stripe_sub5.oauth_error.OAuthError as e:
         return "Error: " + str(e)
 
     return """

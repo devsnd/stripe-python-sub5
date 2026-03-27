@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 
 
 TEST_RESOURCE_ID = "ic_123"
@@ -8,38 +8,38 @@ TEST_RESOURCE_ID = "ic_123"
 
 class TestCard(object):
     def test_is_creatable(self, request_mock):
-        resource = stripe.issuing.Card.create(currency="usd", type="physical")
+        resource = stripe_sub5.issuing.Card.create(currency="usd", type="physical")
         request_mock.assert_requested("post", "/v1/issuing/cards")
-        assert isinstance(resource, stripe.issuing.Card)
+        assert isinstance(resource, stripe_sub5.issuing.Card)
 
     def test_is_listable(self, request_mock):
-        resources = stripe.issuing.Card.list()
+        resources = stripe_sub5.issuing.Card.list()
         request_mock.assert_requested("get", "/v1/issuing/cards")
         assert isinstance(resources.data, list)
-        assert isinstance(resources.data[0], stripe.issuing.Card)
+        assert isinstance(resources.data[0], stripe_sub5.issuing.Card)
 
     def test_is_modifiable(self, request_mock):
-        resource = stripe.issuing.Card.modify(
+        resource = stripe_sub5.issuing.Card.modify(
             TEST_RESOURCE_ID, metadata={"key": "value"}
         )
         request_mock.assert_requested(
             "post", "/v1/issuing/cards/%s" % TEST_RESOURCE_ID
         )
-        assert isinstance(resource, stripe.issuing.Card)
+        assert isinstance(resource, stripe_sub5.issuing.Card)
 
     def test_is_retrievable(self, request_mock):
-        resource = stripe.issuing.Card.retrieve(TEST_RESOURCE_ID)
+        resource = stripe_sub5.issuing.Card.retrieve(TEST_RESOURCE_ID)
         request_mock.assert_requested(
             "get", "/v1/issuing/cards/%s" % TEST_RESOURCE_ID
         )
-        assert isinstance(resource, stripe.issuing.Card)
+        assert isinstance(resource, stripe_sub5.issuing.Card)
 
     def test_is_saveable(self, request_mock):
-        resource = stripe.issuing.Card.retrieve(TEST_RESOURCE_ID)
+        resource = stripe_sub5.issuing.Card.retrieve(TEST_RESOURCE_ID)
         resource.metadata["key"] = "value"
         card = resource.save()
         request_mock.assert_requested(
             "post", "/v1/issuing/cards/%s" % TEST_RESOURCE_ID
         )
-        assert isinstance(resource, stripe.issuing.Card)
+        assert isinstance(resource, stripe_sub5.issuing.Card)
         assert resource is card

@@ -1,23 +1,23 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
-from stripe import util
+import stripe_sub5
+from stripe_sub5 import util
 
 
 class TestCustomMethod(object):
-    @stripe.api_resources.abstract.custom_method(
+    @stripe_sub5.api_resources.abstract.custom_method(
         "do_stuff", http_verb="post", http_path="do_the_thing"
     )
-    @stripe.api_resources.abstract.custom_method(
+    @stripe_sub5.api_resources.abstract.custom_method(
         "do_list_stuff", http_verb="get", http_path="do_the_list_thing"
     )
-    @stripe.api_resources.abstract.custom_method(
+    @stripe_sub5.api_resources.abstract.custom_method(
         "do_stream_stuff",
         http_verb="post",
         http_path="do_the_stream_thing",
         is_streaming=True,
     )
-    class MyResource(stripe.api_resources.abstract.APIResource):
+    class MyResource(stripe_sub5.api_resources.abstract.APIResource):
         OBJECT_NAME = "myresource"
 
         def do_stuff(self, idempotency_key=None, **params):

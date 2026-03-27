@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import pytest
 
-import stripe
+import stripe_sub5
 
 
 TEST_RESOURCE_ID = "acap_123"
@@ -15,8 +15,8 @@ class TestCapability(object):
             "object": "capability",
             "account": "acct_123",
         }
-        return stripe.Capability.construct_from(
-            capability_dict, stripe.api_key
+        return stripe_sub5.Capability.construct_from(
+            capability_dict, stripe_sub5.api_key
         )
 
     def test_has_instance_url(self, request_mock):
@@ -28,11 +28,11 @@ class TestCapability(object):
 
     def test_is_not_modifiable(self, request_mock):
         with pytest.raises(NotImplementedError):
-            stripe.Capability.modify(TEST_RESOURCE_ID, requested=True)
+            stripe_sub5.Capability.modify(TEST_RESOURCE_ID, requested=True)
 
     def test_is_not_retrievable(self, request_mock):
         with pytest.raises(NotImplementedError):
-            stripe.Capability.retrieve(TEST_RESOURCE_ID)
+            stripe_sub5.Capability.retrieve(TEST_RESOURCE_ID)
 
     def test_is_saveable(self, request_mock):
         resource = self.construct_resource()

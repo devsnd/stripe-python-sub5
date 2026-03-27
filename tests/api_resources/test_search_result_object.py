@@ -4,13 +4,13 @@ import json
 
 import pytest
 
-import stripe
+import stripe_sub5
 
 
 class TestSearchResultObject(object):
     @pytest.fixture
     def search_result_object(self):
-        return stripe.SearchResultObject.construct_from(
+        return stripe_sub5.SearchResultObject.construct_from(
             {"object": "search_result", "url": "/my/path", "data": ["foo"]},
             "mykey",
         )
@@ -32,24 +32,24 @@ class TestSearchResultObject(object):
         request_mock.assert_requested(
             "get", "/my/path", {"myparam": "you"}, None
         )
-        assert isinstance(res, stripe.SearchResultObject)
+        assert isinstance(res, stripe_sub5.SearchResultObject)
         assert res.stripe_account == "acct_123"
         assert isinstance(res.data, list)
-        assert isinstance(res.data[0], stripe.Charge)
+        assert isinstance(res.data[0], stripe_sub5.Charge)
         assert res.data[0].foo == "bar"
 
     def test_is_empty(self):
-        sro = stripe.SearchResultObject.construct_from({"data": []}, None)
+        sro = stripe_sub5.SearchResultObject.construct_from({"data": []}, None)
         assert sro.is_empty is True
 
     def test_empty_search_result(self):
-        sro = stripe.SearchResultObject.empty_search_result()
+        sro = stripe_sub5.SearchResultObject.empty_search_result()
         assert sro.is_empty
 
     def test_iter(self):
         arr = [{"id": 1}, {"id": 2}, {"id": 3}]
-        expected = stripe.util.convert_to_stripe_object(arr)
-        sro = stripe.SearchResultObject.construct_from({"data": arr}, None)
+        expected = stripe_sub5.util.convert_to_stripe_object(arr)
+        sro = stripe_sub5.SearchResultObject.construct_from({"data": arr}, None)
         assert list(sro) == expected
 
     def test_len(self, search_result_object):
@@ -58,13 +58,13 @@ class TestSearchResultObject(object):
     def test_bool(self, search_result_object):
         assert search_result_object
 
-        empty = stripe.SearchResultObject.construct_from(
+        empty = stripe_sub5.SearchResultObject.construct_from(
             {"object": "list", "url": "/my/path", "data": []}, "mykey"
         )
         assert bool(empty) is False
 
     def test_next_search_result_page(self, request_mock):
-        sro = stripe.SearchResultObject.construct_from(
+        sro = stripe_sub5.SearchResultObject.construct_from(
             {
                 "object": "list",
                 "data": [{"id": 1}],
@@ -95,7 +95,7 @@ class TestSearchResultObject(object):
         assert next_sro.data[0].id == 2
 
     def test_next_search_result_page_with_filters(self, request_mock):
-        sro = stripe.SearchResultObject.construct_from(
+        sro = stripe_sub5.SearchResultObject.construct_from(
             {
                 "object": "list",
                 "data": [{"id": 1}],
@@ -127,7 +127,7 @@ class TestSearchResultObject(object):
         }
 
     def test_next_search_result_page_empty_search_result(self):
-        sro = stripe.SearchResultObject.construct_from(
+        sro = stripe_sub5.SearchResultObject.construct_from(
             {
                 "object": "list",
                 "data": [{"id": 1}],
@@ -139,27 +139,27 @@ class TestSearchResultObject(object):
         )
 
         next_sro = sro.next_search_result_page()
-        assert next_sro == stripe.SearchResultObject.empty_search_result()
+        assert next_sro == stripe_sub5.SearchResultObject.empty_search_result()
 
     def test_serialize_empty_search_result(self):
-        empty = stripe.SearchResultObject.construct_from(
+        empty = stripe_sub5.SearchResultObject.construct_from(
             {"object": "list", "data": []}, "mykey"
         )
         serialized = str(empty)
-        deserialized = stripe.SearchResultObject.construct_from(
+        deserialized = stripe_sub5.SearchResultObject.construct_from(
             json.loads(serialized), "mykey"
         )
         assert deserialized == empty
 
     def test_serialize_nested_empty_search_result(self):
-        empty = stripe.SearchResultObject.construct_from(
+        empty = stripe_sub5.SearchResultObject.construct_from(
             {"object": "list", "data": []}, "mykey"
         )
-        obj = stripe.stripe_object.StripeObject.construct_from(
+        obj = stripe_sub5.stripe_object.StripeObject.construct_from(
             {"nested": empty}, "mykey"
         )
         serialized = str(obj)
-        deserialized = stripe.stripe_object.StripeObject.construct_from(
+        deserialized = stripe_sub5.stripe_object.StripeObject.construct_from(
             json.loads(serialized), "mykey"
         )
         assert deserialized.nested == empty
@@ -179,7 +179,7 @@ class TestAutoPaging:
         return model
 
     def test_iter_one_page(self, request_mock):
-        sro = stripe.SearchResultObject.construct_from(
+        sro = stripe_sub5.SearchResultObject.construct_from(
             self.pageable_model_response(["pm_123", "pm_124"], False, None),
             "mykey",
         )
@@ -191,7 +191,7 @@ class TestAutoPaging:
         assert seen == ["pm_123", "pm_124"]
 
     def test_iter_two_pages(self, request_mock):
-        sro = stripe.SearchResultObject.construct_from(
+        sro = stripe_sub5.SearchResultObject.construct_from(
             self.pageable_model_response(["pm_123", "pm_124"], True, "token"),
             "mykey",
         )

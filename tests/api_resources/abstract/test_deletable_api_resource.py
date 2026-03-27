@@ -1,10 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 
 
 class TestDeletableAPIResource(object):
-    class MyDeletable(stripe.api_resources.abstract.DeletableAPIResource):
+    class MyDeletable(stripe_sub5.api_resources.abstract.DeletableAPIResource):
         OBJECT_NAME = "mydeletable"
 
     def test_delete_class(self, request_mock):

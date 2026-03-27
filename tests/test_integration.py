@@ -7,7 +7,7 @@ import json
 import warnings
 import time
 
-import stripe
+import stripe_sub5
 import pytest
 
 if platform.python_implementation() == "PyPy":
@@ -31,26 +31,26 @@ class TestIntegration(object):
     @pytest.fixture(autouse=True)
     def setup_stripe(self):
         orig_attrs = {
-            "api_base": stripe.api_base,
-            "api_key": stripe.api_key,
-            "default_http_client": stripe.default_http_client,
-            "enable_telemetry": stripe.enable_telemetry,
-            "max_network_retries": stripe.max_network_retries,
-            "proxy": stripe.proxy,
+            "api_base": stripe_sub5.api_base,
+            "api_key": stripe_sub5.api_key,
+            "default_http_client": stripe_sub5.default_http_client,
+            "enable_telemetry": stripe_sub5.enable_telemetry,
+            "max_network_retries": stripe_sub5.max_network_retries,
+            "proxy": stripe_sub5.proxy,
         }
-        stripe.api_base = "http://localhost:12111"  # stripe-mock
-        stripe.api_key = "sk_test_123"
-        stripe.default_http_client = None
-        stripe.enable_telemetry = False
-        stripe.max_network_retries = 3
-        stripe.proxy = None
+        stripe_sub5.api_base = "http://localhost:12111"  # stripe-mock
+        stripe_sub5.api_key = "sk_test_123"
+        stripe_sub5.default_http_client = None
+        stripe_sub5.enable_telemetry = False
+        stripe_sub5.max_network_retries = 3
+        stripe_sub5.proxy = None
         yield
-        stripe.api_base = orig_attrs["api_base"]
-        stripe.api_key = orig_attrs["api_key"]
-        stripe.default_http_client = orig_attrs["default_http_client"]
-        stripe.enable_telemetry = orig_attrs["enable_telemetry"]
-        stripe.max_network_retries = orig_attrs["max_network_retries"]
-        stripe.proxy = orig_attrs["proxy"]
+        stripe_sub5.api_base = orig_attrs["api_base"]
+        stripe_sub5.api_key = orig_attrs["api_key"]
+        stripe_sub5.default_http_client = orig_attrs["default_http_client"]
+        stripe_sub5.enable_telemetry = orig_attrs["enable_telemetry"]
+        stripe_sub5.max_network_retries = orig_attrs["max_network_retries"]
+        stripe_sub5.proxy = orig_attrs["proxy"]
 
     def setup_mock_server(self, handler):
         # Configure mock server.
@@ -81,8 +81,8 @@ class TestIntegration(object):
 
         self.setup_mock_server(MockServerRequestHandler)
 
-        stripe.api_base = "http://localhost:%s" % self.mock_server_port
-        stripe.Balance.retrieve()
+        stripe_sub5.api_base = "http://localhost:%s" % self.mock_server_port
+        stripe_sub5.Balance.retrieve()
         assert MockServerRequestHandler.num_requests == 1
 
     def test_hits_proxy_through_default_http_client(self):
@@ -102,14 +102,14 @@ class TestIntegration(object):
 
         self.setup_mock_server(MockServerRequestHandler)
 
-        stripe.proxy = "http://localhost:%s" % self.mock_server_port
-        stripe.Balance.retrieve()
+        stripe_sub5.proxy = "http://localhost:%s" % self.mock_server_port
+        stripe_sub5.Balance.retrieve()
         assert MockServerRequestHandler.num_requests == 1
 
-        stripe.proxy = "http://bad-url"
+        stripe_sub5.proxy = "http://bad-url"
 
         with warnings.catch_warnings(record=True) as w:
-            stripe.Balance.retrieve()
+            stripe_sub5.Balance.retrieve()
             assert len(w) == 1
             assert "stripe.proxy was updated after sending a request" in str(
                 w[0].message
@@ -134,12 +134,12 @@ class TestIntegration(object):
 
         self.setup_mock_server(MockServerRequestHandler)
 
-        stripe.default_http_client = (
-            stripe.http_client.new_default_http_client(
+        stripe_sub5.default_http_client = (
+            stripe_sub5.http_client.new_default_http_client(
                 proxy="http://localhost:%s" % self.mock_server_port
             )
         )
-        stripe.Balance.retrieve()
+        stripe_sub5.Balance.retrieve()
         assert MockServerRequestHandler.num_requests == 1
 
     def test_passes_client_telemetry_when_enabled(self):
@@ -205,11 +205,11 @@ class TestIntegration(object):
                     )
 
         self.setup_mock_server(MockServerRequestHandler)
-        stripe.api_base = "http://localhost:%s" % self.mock_server_port
-        stripe.enable_telemetry = True
+        stripe_sub5.api_base = "http://localhost:%s" % self.mock_server_port
+        stripe_sub5.enable_telemetry = True
 
-        stripe.Balance.retrieve()
-        stripe.Balance.retrieve()
+        stripe_sub5.Balance.retrieve()
+        stripe_sub5.Balance.retrieve()
         assert MockServerRequestHandler.num_requests == 2
 
     def test_uses_thread_local_client_telemetry(self):
@@ -240,13 +240,13 @@ class TestIntegration(object):
                 self.wfile.write(json.dumps({}).encode("utf-8"))
 
         self.setup_mock_server(MockServerRequestHandler)
-        stripe.api_base = "http://localhost:%s" % self.mock_server_port
-        stripe.enable_telemetry = True
-        stripe.default_http_client = stripe.http_client.RequestsClient()
+        stripe_sub5.api_base = "http://localhost:%s" % self.mock_server_port
+        stripe_sub5.enable_telemetry = True
+        stripe_sub5.default_http_client = stripe_sub5.http_client.RequestsClient()
 
         def work():
-            stripe.Balance.retrieve()
-            stripe.Balance.retrieve()
+            stripe_sub5.Balance.retrieve()
+            stripe_sub5.Balance.retrieve()
 
         threads = [Thread(target=work) for _ in range(10)]
         for t in threads:

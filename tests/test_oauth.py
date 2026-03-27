@@ -1,13 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
-from stripe.six.moves.urllib.parse import parse_qs, urlparse
+from stripe_sub5.six.moves.urllib.parse import parse_qs, urlparse
 
-import stripe
+import stripe_sub5
 
 
 class TestOAuth(object):
     def test_authorize_url(self, request_mock):
-        url = stripe.OAuth.authorize_url(
+        url = stripe_sub5.OAuth.authorize_url(
             scope="read_write",
             state="csrf_token",
             stripe_user={
@@ -19,7 +19,7 @@ class TestOAuth(object):
         o = urlparse(url)
         params = parse_qs(o.query)
 
-        url_express = stripe.OAuth.authorize_url(
+        url_express = stripe_sub5.OAuth.authorize_url(
             express=True, scope="read_write", state="csrf_token"
         )
         o_express = urlparse(url_express)
@@ -52,7 +52,7 @@ class TestOAuth(object):
             },
         )
 
-        resp = stripe.OAuth.token(
+        resp = stripe_sub5.OAuth.token(
             grant_type="authorization_code",
             code="this_is_an_authorization_code",
         )
@@ -73,7 +73,7 @@ class TestOAuth(object):
             {"stripe_user_id": "acct_test_deauth"},
         )
 
-        resp = stripe.OAuth.deauthorize(stripe_user_id="acct_test_deauth")
+        resp = stripe_sub5.OAuth.deauthorize(stripe_user_id="acct_test_deauth")
         request_mock.assert_requested(
             "post",
             "/oauth/deauthorize",

@@ -1,10 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 
 
 class TestListableAPIResource(object):
-    class MyListable(stripe.api_resources.abstract.ListableAPIResource):
+    class MyListable(stripe_sub5.api_resources.abstract.ListableAPIResource):
         OBJECT_NAME = "mylistable"
 
     def test_all(self, request_mock):
@@ -26,7 +26,7 @@ class TestListableAPIResource(object):
         res = self.MyListable.list()
         request_mock.assert_requested("get", "/v1/mylistables", {})
         assert len(res.data) == 2
-        assert all(isinstance(obj, stripe.Charge) for obj in res.data)
+        assert all(isinstance(obj, stripe_sub5.Charge) for obj in res.data)
         assert res.data[0].name == "jose"
         assert res.data[1].name == "curly"
 

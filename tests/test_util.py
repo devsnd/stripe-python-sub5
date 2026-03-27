@@ -3,10 +3,10 @@ from __future__ import absolute_import, division, print_function
 import sys
 from collections import namedtuple
 
-import stripe
-from stripe import util
-from stripe.six import ensure_text
-from stripe.six.moves import builtins
+import stripe_sub5
+from stripe_sub5 import util
+from stripe_sub5.six import ensure_text
+from stripe_sub5.six.moves import builtins
 
 PRINT_FUNC_STRING = builtins.__name__ + ".print"
 
@@ -142,9 +142,9 @@ class TestUtil(object):
         }
 
         obj = util.convert_to_stripe_object(resp)
-        assert isinstance(obj, stripe.Balance)
+        assert isinstance(obj, stripe_sub5.Balance)
         assert type(obj.available) == list
-        assert isinstance(obj.available[0], stripe.stripe_object.StripeObject)
+        assert isinstance(obj.available[0], stripe_sub5.stripe_object.StripeObject)
 
         d = util.convert_to_dict(obj)
         assert isinstance(d, dict)

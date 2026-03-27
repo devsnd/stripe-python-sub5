@@ -1,13 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 
 
 class TestNestedResourceClassMethods(object):
-    @stripe.api_resources.abstract.nested_resource_class_methods(
+    @stripe_sub5.api_resources.abstract.nested_resource_class_methods(
         "nested", operations=["create", "retrieve", "update", "delete", "list"]
     )
-    class MainResource(stripe.api_resources.abstract.APIResource):
+    class MainResource(stripe_sub5.api_resources.abstract.APIResource):
         OBJECT_NAME = "mainresource"
 
     def test_create_nested(self, request_mock):

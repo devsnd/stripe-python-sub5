@@ -2,24 +2,24 @@ from __future__ import absolute_import, division, print_function
 
 import json
 
-import stripe
-from stripe import six, util
-from stripe.stripe_response import StripeResponse, StripeStreamResponse
+import stripe_sub5
+from stripe_sub5 import six, util
+from stripe_sub5.stripe_response import StripeResponse, StripeStreamResponse
 
 
 class RequestMock(object):
     def __init__(self, mocker):
         self._mocker = mocker
 
-        self._real_request = stripe.api_requestor.APIRequestor.request
+        self._real_request = stripe_sub5.api_requestor.APIRequestor.request
         self._real_request_stream = (
-            stripe.api_requestor.APIRequestor.request_stream
+            stripe_sub5.api_requestor.APIRequestor.request_stream
         )
         self._stub_request_handler = StubRequestHandler()
 
         self.constructor_patcher = self._mocker.patch(
             "stripe.api_requestor.APIRequestor.__init__",
-            side_effect=stripe.api_requestor.APIRequestor.__init__,
+            side_effect=stripe_sub5.api_requestor.APIRequestor.__init__,
             autospec=True,
         )
 
@@ -40,7 +40,7 @@ class RequestMock(object):
             method, url, expect_stream=False
         )
         if response is not None:
-            return response, stripe.api_key
+            return response, stripe_sub5.api_key
 
         return self._real_request(requestor, method, url, *args, **kwargs)
 
@@ -49,7 +49,7 @@ class RequestMock(object):
             method, url, expect_stream=True
         )
         if response is not None:
-            return response, stripe.api_key
+            return response, stripe_sub5.api_key
 
         return self._real_request_stream(
             requestor, method, url, *args, **kwargs

@@ -1,10 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
-import stripe
+import stripe_sub5
 
 
 class TestCreateableAPIResource(object):
-    class MyCreatable(stripe.api_resources.abstract.CreateableAPIResource):
+    class MyCreatable(stripe_sub5.api_resources.abstract.CreateableAPIResource):
         OBJECT_NAME = "mycreatable"
 
     def test_create(self, request_mock):
@@ -18,7 +18,7 @@ class TestCreateableAPIResource(object):
         res = self.MyCreatable.create()
 
         request_mock.assert_requested("post", "/v1/mycreatables", {})
-        assert isinstance(res, stripe.Charge)
+        assert isinstance(res, stripe_sub5.Charge)
         assert res.foo == "bar"
 
         assert res.last_response is not None
@@ -37,5 +37,5 @@ class TestCreateableAPIResource(object):
         request_mock.assert_requested(
             "post", "/v1/mycreatables", {}, {"Idempotency-Key": "foo"}
         )
-        assert isinstance(res, stripe.Charge)
+        assert isinstance(res, stripe_sub5.Charge)
         assert res.foo == "bar"
