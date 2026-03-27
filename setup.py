@@ -13,11 +13,11 @@ with open(
     long_description = fp.read()
 
 version_contents = {}
-with open(os.path.join(here, "stripe", "version.py"), encoding="utf-8") as f:
+with open(os.path.join(here, "stripe_sub5", "version.py"), encoding="utf-8") as f:
     exec(f.read(), version_contents)
 
 setup(
-    name="stripe",
+    name="stripe_sub5",
     version=version_contents["VERSION"],
     description="Python bindings for the Stripe API",
     long_description=long_description,
